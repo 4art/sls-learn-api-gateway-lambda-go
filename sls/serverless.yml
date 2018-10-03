@@ -1,0 +1,37 @@
+service: metraf-api-gateway-hello
+
+provider:
+  name: aws
+  runtime: go1.x
+  region: eu-central-1
+  profile: artem
+  stage: dev
+  deploymentBucket:
+    name: learning-serverless
+  stackTags:
+    Env: ${self:provider.stage}
+  iamRoleStatements:
+  - Effect: Allow
+    Resource: "*"
+    Action:
+    - s3:*
+    - lambda:*
+    - ecs:*
+    - iam:*
+    - cloudformation:*
+custom:
+  serviceId: ${self:service}-${self:provider.stage}
+
+package:
+ exclude:
+   - ../**
+ include:
+   - ../bin/**
+
+functions:
+  hello:
+    handler: /bin/hello
+    events:
+      - http:
+          path: hello
+          method: get
