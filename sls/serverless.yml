@@ -23,15 +23,25 @@ custom:
   serviceId: ${self:service}-${self:provider.stage}
 
 package:
- exclude:
-   - ../**
- include:
-   - ../bin/**
+  exclude:
+  - ../**
+  include:
+  - ../bin/**
 
 functions:
   hello:
     handler: /bin/hello
     events:
-      - http:
-          path: hello
-          method: get
+    - http:
+        path: hello
+        method: get
+  helloParam:
+    handler: bin/helloParam
+    events:
+    - http:
+        path: hello/{name}
+        method: get
+        request:
+          parameters:
+            paths:
+            name: true
