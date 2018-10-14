@@ -6,6 +6,8 @@ provider:
   region: eu-central-1
   profile: artem
   stage: dev
+  environment:
+    DYNAMODB_TABLE: cities
   deploymentBucket:
     name: learning-serverless
   stackTags:
@@ -46,3 +48,66 @@ functions:
           parameters:
             paths:
             name: true
+  putCity:
+    handler: bin/putCity
+    events:
+    - http:
+        path: city
+        method: post
+  listCities:
+    handler: bin/listCities
+    events:
+    - http:
+        path: city
+        method: get
+  getCity:
+    handler: bin/getCity
+    events:
+    - http:
+        path: city/{id}
+        method: get
+        request:
+          parameters:
+            paths:
+            id: true
+  deleteCity:
+    handler: bin/deleteCity
+    events:
+    - http:
+        path: city/{id}
+        method: delete
+        request:
+          parameters:
+            paths:
+            id: true
+
+resources:
+  Resources:
+    DynamoDbTable:
+      Type: AWS::DynamoDB::Table
+      DeletionPolicy: Retain
+      Properties:
+        AttributeDefinitions:
+        - AttributeName: id
+          AttributeType: S
+        - AttributeName: city
+          AttributeType: S
+        KeySchema:
+        - AttributeName: id
+          KeyType: HASH
+        GlobalSecondaryIndexes:
+        - IndexName: city-index
+          KeySchema:
+          - AttributeName: city
+            KeyType: HASH
+          Projection:
+            NonKeyAttributes:
+            - country
+            ProjectionType: INCLUDE
+          ProvisionedThroughput:
+            ReadCapacityUnits: 1
+            WriteCapacityUnits: 1
+        ProvisionedThroughput:
+          ReadCapacityUnits: 1
+          WriteCapacityUnits: 1
+        TableName: ${self:provider.environment.DYNAMODB_TABLE}
