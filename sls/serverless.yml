@@ -14,11 +14,12 @@ provider:
   - Effect: Allow
     Resource: "*"
     Action:
-    - s3:*
-    - lambda:*
-    - ecs:*
-    - iam:*
-    - cloudformation:*
+    - dynamodb:Query
+    - dynamodb:Scan
+    - dynamodb:GetItem
+    - dynamodb:PutItem
+    - dynamodb:UpdateItem
+    - dynamodb:DeleteItem
 custom:
   serviceId: ${self:service}-${self:provider.stage}
 
