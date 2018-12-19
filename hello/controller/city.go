@@ -32,7 +32,7 @@ func GetCityHandler(request events.APIGatewayProxyRequest) (events.APIGatewayPro
 	id := pathVariables["id"]
 	city := repo.FindCityById(id)
 	if city.Id == "" {
-		return events.APIGatewayProxyResponse{Body: nil, StatusCode: 200}, nil
+		return events.APIGatewayProxyResponse{Body: "", StatusCode: 200}, nil
 	}
 	responseStr, _ := json.Marshal(city)
 	return events.APIGatewayProxyResponse{Body: string(responseStr), StatusCode: 200}, nil
